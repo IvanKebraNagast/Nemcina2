@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Precvičovanie nemčiny</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f1f5f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 1rem;
+            box-sizing: border-box;
+            user-select: auto;
+        }
+        .container {
+            background-color: #ffffff;
+            border-radius: 1.5rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+            border: 4px solid #818cf8;
+        }
+        .button {
+            padding: 0.75rem 2rem;
+            font-weight: bold;
+            border-radius: 9999px;
+            color: white;
+            transition: all 0.2s ease-in-out;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        .button-indigo {
+            background-color: #4f46e5;
+        }
+        .button-indigo:hover {
+            background-color: #4338ca;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+        }
+        .button-green {
+            background-color: #22c55e;
+        }
+        .button-green:hover {
+            background-color: #16a34a;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+        }
+        .button-blue {
+            background-color: #3b82f6;
+        }
+        .button-blue:hover {
+            background-color: #2563eb;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+        }
+        .button-red {
+            background-color: #ef4444;
+        }
+        .button-red:hover {
+            background-color: #dc2626;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+        }
+        .button:disabled {
+            background-color: #94a3b8;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        .word-display {
+            min-height: 100px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .slovak-display {
+            min-height: 50px;
+            margin-top: 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .speak-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.5rem 1rem;
+            font-weight: bold;
+            border-radius: 9999px;
+            color: white;
+            transition: all 0.2s ease-in-out;
+            cursor: pointer;
+            margin-top: 0.5rem;
+        }
+        .speak-button:disabled {
+            background-color: #cbd5e1;
+            cursor: not-allowed;
+            color: #64748b;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1 class="text-3xl font-bold text-slate-800 mb-6">Precvičovanie nemčiny</h1>
+        <div id="app-content">
+            <!-- Obsah aplikácie sa tu vyrenderuje -->
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const vocabularyList = [
+                { german: 'Vermutung', slovak: 'domienka, tušenie' },
+                { german: 'Vermögen', slovak: 'majetok, schopnosť' },
+                { german: 'äußerste', slovak: 'najkrajnejší, krajnosť' },
+                { german: 'die Ankündigung', slovak: 'oznámenie, ohlásenie, oznam' },
+                { german: 'Fahrgestell', slovak: 'podvozok' },
+                { german: 'zu schätzen', slovak: 'oceniť' },
+                { german: 'loszulassen', slovak: 'nechať ísť' },
+                { german: 'zusammenkommen', slovak: 'dať sa do kopy' },
+                { german: 'auseinander', slovak: 'od seba' },
+                { german: 'ein bisschen auseinander stehen', slovak: 'stáť blízko od seba' },
+                { german: 'sich auseinander entwickeln', slovak: 'odvíjať sa jeden od druhého' },
+                { german: 'begegnen', slovak: 'stretnúť' },
+                { german: 'begegnet', slovak: 'stretol' },
+                { german: 'der/die Zweifel', slovak: 'neistota, pochybnosť' },
+                { german: 'der Leichnam', slovak: 'mŕtvola' },
+                { german: 'mitmachen', slovak: 'zúčastniť sa' },
+                { german: 'Ja ich werde mache mit', slovak: 'Áno, pridám sa' },
+                { german: 'Ja, ich schließe mich an', slovak: 'Áno, súhlasím s tým' },
+                { german: 'Rinderfilet', slovak: 'Hovädzia sviečkovica' },
+                { german: 'Auftragsverfolgung', slovak: 'sledovanie objednávky' },
+                { german: 'der Scherz', slovak: 'sranda, žart' },
+                { german: 'die Zuversicht', slovak: 'nádej, dôvera, viera' },
+                { german: 'Abschließen', slovak: 'zamknúť' },
+                { german: 'Aufschließen', slovak: 'odomknúť' },
+                { german: 'Ich möchte mich gerne nach der Miete erkundigen', slovak: 'Chcel by som sa opýtať na nájomné.' },
+                { german: 'der Bluterguss', slovak: 'modrina' },
+                { german: 'die Narbe', slovak: 'jazva' },
+                { german: 'der Ausschlag', slovak: 'vyrážka' },
+                { german: 'die Schnittwunde', slovak: 'porezanie' },
+                { german: 'der Splitter', slovak: 'trieska' },
+                { german: 'Glühwürmchen', slovak: 'svetluška' },
+                { german: 'Einrichtungshaus', slovak: 'Obchod s nábytkom' },
+                { german: 'bewirkt', slovak: 'spôsobí, spôsobia' },
+                { german: 'Erwachen', slovak: 'prebudenie, zobudenie' },
+                { german: 'Arbeitsunfähigkeitsbescheinigung', slovak: 'Práce neschopnosť, pn ka' },
+                { german: 'Schuhe anziehen', slovak: 'obuť sa' },
+                { german: 'Schuhe ausziehen', slovak: 'vyzuť sa' },
+                { german: 'Sich anziehen', slovak: 'obliecť sa' },
+                { german: 'Sich ausziehen', slovak: 'vyzliecť sa' },
+                { german: 'Zieh deine Schuhe aus!', slovak: 'vyzuj sa!' },
+                { german: 'Zieh deine Sachen aus!', slovak: 'vyzleč sa!' },
+                { german: 'Zieh Dich aus!', slovak: 'vyzleč sa!' },
+                { german: 'zieh dich aus baby', slovak: 'vyzleč sa zlato' },
+                { german: 'Zieh deine Kleidung aus, Baby', slovak: 'vyzleč sa, zlatko' },
+                { german: 'Übergeben', slovak: 'odovzdať' },
+                { german: 'Ich betrachte das als eine Lüge', slovak: 'Považujem to za lož' },
+                { german: 'schäm dich so zu lügen!', slovak: 'hanba ti takto klamať' },
+                { german: 'God segne dich', slovak: 'Boh ťa žehnaj' },
+                { german: 'Kartoffel schälen und würfeln', slovak: 'Zemiaky ošúpeme a nakrájame na kocky' },
+                { german: 'Nebelhorn', slovak: 'Hmlovka' },
+                { german: 'Schwein Haxe', slovak: 'prasacie koleno' },
+                { german: 'So habe ich das nie gesagt! Du drehst mir immer das Wort im Munde herum!', slovak: 'Nikdy som to takto nepovedal, vždy prekrúcaš moje slová!' },
+                { german: 'Luftabwehr', slovak: 'protivzdušná obrana' },
+                { german: 'Gehirner schütterung', slovak: 'otras mozgu' },
+                { german: 'Beinbruch', slovak: 'zlomená noha' },
+                { german: 'Krankenhausaufenthalt', slovak: 'Hospitalizácia' },
+                { german: 'Ich bin im Reinen mit mir', slovak: 'Som so sebou vyrovnaný' },
+                { german: 'Notaufnahme', slovak: 'Pohotovostný príjem' },
+                { german: 'Zinssatz', slovak: 'Úroková sadzba' },
+                { german: 'Jahrzente', slovak: 'desaťročia' },
+                { german: 'LG/liebe grüße', slovak: 's láskou' },
+                { german: 'Wer sollst du sein?', slovak: 'Kto si ty?' },
+                { german: 'ich wünschte zwischen uns wäre was', slovak: 'Chcel by som, aby medzi nami niečo bolo' },
+                { german: 'Vogelgezwitscher', slovak: 'vtáči spev, vtáčie štebotanie' },
+                { german: 'Verkehrssituation', slovak: 'Dopravná situácia' },
+                { german: 'Tränensäcke', slovak: 'Vaky pod očami, Opuchnuté viečka, Kruhy pod očami, Tmavé kruhy pod očami' },
+                { german: 'Inwiefern stimmen Sie den folgenden Aussagen zu?', slovak: 'Do akej miery súhlasíte s nasledujúcimi tvrdeniami?' },
+                { german: 'Bin unentschieden', slovak: 'Nie som rozhodnutý' },
+                { german: 'Gelegentlich', slovak: 'Príležitostne' },
+                { german: 'Lass Dich nicht unterkriegen!', slovak: 'Nenechaj sa zlomiť! Nepoddaj sa! Bojuj ďalej! Zostaň silný! Nevzdávaj sa svojich snov!' },
+                { german: 's Magengeschwür', slovak: 'žalúdočný vred' },
+                { german: 'Befreiung von der Zuzahlung', slovak: 'oslobodenia od poplatku za spoluúčasť' },
+                { german: 'Das Leben ist wirklich hart, wir müssen ständig kämpfen, and wir bekommen das Wichtigste nicht, nämlich die Liebe.', slovak: 'Život je naozaj ťažký, stále musíme bojovať a nedostáva sa nám toho najdôležitejšieho, a to je láska.' },
+                { german: 'Folsäure', slovak: 'kyselina listová' },
+                { german: 'Abgehauen', slovak: 'Ujsť, utiecť, zmiznúť' },
+                { german: 'Meine Gesundheit macht mir im Moment zu schaffen', slovak: 'Moje zdravie mi momentálne dáva zabrať' },
+                { german: 'Liegestütze', slovak: 'kliky' },
+                { german: 'Engagiert sich für die Einhaltung der Menschenrechte entlang seiner Lieferkette', slovak: 'Zaviazali sa dodržiavať ľudské práva v rámci svojho dodávateľského reťazca.' },
+                { german: 'Im Folgenden geht es um das Thema Alltag', slovak: 'Nasledujúci text sa týka "každodenného života".' },
+                { german: 'Vollzeit erwerbstätig', slovak: 'Zamestnaný na plný úväzok' },
+                { german: 'Beugen', slovak: 'ohnúť' },
+                { german: 'Strecken', slovak: 'narovnať, roztiahnuť, natiahnuť' },
+                { german: 'Spreiz deine Beine!', slovak: 'Roztiahni nohy' },
+                { german: 'Grätsche die Beine!', slovak: 'Roztiahni nohy do široka!' },
+                { german: 'Verwechsle vier Dinge nicht: Höflichkeit ist kein flirten. Aufmerksamkeit ist keine Liebe. Stille ist keine Wut. Tränen sind keine Schwäche', slovak: 'Nezamieňajte si štyri veci: Zdvorilosť nie je flirtovanie. Pozornosť nie je láska. Mlčanie nie je hnev. Slzy nie sú slabosť.' },
+                { german: 'bevorzugen', slovak: 'preferovať, uprednostňovať' },
+                { german: 'Widerlich', slovak: 'odporný, hnusný, protivný, nechutný' },
+                { german: 'Abfindung', slovak: 'odstupné' },
+                { german: 'Verkehrsunfall wegen Raser', slovak: 'Dopravná nehoda v dôsledku prekročenia rýchlosti' },
+                { german: 'Regierungschef', slovak: 'Vedúci predstaviteľ vlády' },
+                { german: 'Premierminister', slovak: 'predseda vlády' },
+                { german: 'Krampfadern (Varizen)', slovak: 'Kŕčové žily' },
+                { german: 'Ich war gestern nicht gut drauf', slovak: 'Včera som nemal dobrú náladu, necítil som sa dobre' },
+                { german: 'Ärztliche Bereitschafts-praxis', slovak: 'lekárska pohotovosť' },
+                { german: 'Wertstoffhof', slovak: 'Recyklačné centrum' },
+                { german: 'Kiefer brechen', slovak: 'Lámanie čelustí' },
+                { german: 'Widereingliederung', slovak: 'Reintegrácia' },
+                { german: 'Spine massager', slovak: 'Masážny prístroj na chrbticu' },
+                { german: 'Kommt mir bekannt vor', slovak: 'Zdá sa mi to známe' },
+                { german: 'Das Handgelenk lockert sich langsam', slovak: 'Zápästie sa pomaly uvoľňuje' },
+                { german: 'Gerichtsvollzieher', slovak: 'súdny exekútor' },
+                { german: 'Ich gehe aus', slovak: 'vyrážam' },
+                { german: 'rund um die Uhr', slovak: 'nonstop' },
+                { german: 'Voraussichtliche Zustellung', slovak: 'Odhadované dodanie' },
+                { german: 'krankheitsbedingt', slovak: 'z dôvodu choroby' },
+                { german: 'Lob sei Gott', slovak: 'Chvála Bohu' },
+                { german: 'Got sei dank', slovak: 'Vďaka Bohu' },
+                { german: 'Erzieherin', slovak: 'vychovávateľka' },
+                { german: 'Je', slovak: 'čím' },
+                { german: 'Desto', slovak: 'tým' },
+                { german: 'Klobása', slovak: 'Wurst' },
+                { german: 'Húrka', slovak: 'Blutwurst alebo Grützwurst (podľa druhu)' },
+                { german: 'Párky', slovak: 'Würstchen' },
+                { german: 'Špekačky', slovak: 'Speckwürstchen alebo Bratwürstchen (podľa druhu)' },
+                { german: 'Packetzusteller', slovak: 'doručovateľ balíkov, kuriér' },
+                { german: 'Ich möchte weder Fleisch noch Fisch', slovak: 'Nechcem ani mäso ani rybu.' },
+                { german: 'Bei einer jungen Frau wird der Schwanz ruiniert, aber bei einer alten Frau kann man gut üben.', slovak: 'Na mladej žene sa kokot ničí, na starej žene sa dobre cvičí.' },
+                { german: 'Höschen', slovak: 'nohavičky' },
+                { german: 'das Gleis', slovak: 'koľaj, koľajisko' },
+                { german: 'Schiene', slovak: 'dlaha, ortéza' },
+                { german: 'Schienen', slovak: 'koľajnice' },
+                { german: 'Strecke', slovak: 'trať, trasa, vzdialenosť, úsek' },
+                { german: 'Gesellschaft mit beschränkter Haftung (GmbH)', slovak: 'spoločnosť s ručením obmedzeným' },
+                { german: 'Schämen', slovak: 'Hanbiť sa' },
+                { german: 'empfehlen', slovak: 'odporučiť, poradiť' },
+                { german: 'Wunder', slovak: 'zázrak' },
+                { german: 'teilnehmen', slovak: 'zúčastniť sa' },
+                { german: 'Er hat mir gesagt, dass meine Schulter anfängt zu vernarben', slovak: 'Hovoril mi, že rameno sa mi začína zjazvovať' },
+                { german: 'Die Stirn', slovak: 'Čelo' },
+                { german: 'Die Ferse', slovak: 'Päta' },
+                { german: 'Die Handfläche', slovak: 'Dlaň' },
+                { german: 'Der Fußrücken', slovak: 'Nart' },
+                { german: 'Das Schienbein', slovak: 'Holeň' },
+                { german: 'Der Oberschenkel', slovak: 'Stehno' },
+                { german: 'Die Wimpern', slovak: 'Mihalnice' },
+                { german: 'Die Augenbraue', slovak: 'Obočie' },
+                { german: 'Aufzeichnen', slovak: 'nahrať, zaznamenať' },
+                { german: 'die Witwe', slovak: 'vdova' },
+                { german: 'bevorzugen', slovak: 'preferovať, uprednostňovať' },
+                { german: 'Vorfahrt gewähren', slovak: 'prednosť v jazde' },
+                { german: 'Wunder', slovak: 'zázrak, div' },
+                { german: 'dauerhafte Folgen', slovak: 'Trvalé následky' },
+                { german: 'Erwerbsunfähigkeitsrente', slovak: 'Invalidný dôchodok' },
+                { german: 'Kann ich aufgrund dauerhafter Folgen einen Antrag auf Erwerbsunfähigkeitsrente stellen?', slovak: 'Môžem požiadať o invalidný dôchodok kvôli trvalým následkom?' },
+                { german: 'Zinsen', slovak: 'Úroky' },
+                { german: 'Meine Finger und mein Handgelenk werden immer steifer und steifer', slovak: 'Moje prsty a moje zápästie sú čoraz tuhšie a tuhšie' },
+                { german: 'Extrem ernste Bedrohung', slovak: 'Mimoriadne závažná hrozba' },
+                { german: 'gemobbt', slovak: 'šikanovaný' },
+                { german: 'Gemütlichkeit', slovak: 'útulnosť' },
+                { german: 'Wovon ist das abhängig?', slovak: 'Na čom to závisí?' },
+                { german: 'Ärztlicher Bereitschaftsdienst', slovak: 'Lekárska pohotovostná služba' },
+                { german: 'Erleichterung', slovak: 'úľava, odľahčenie' },
+                { german: 'Zuversicht', slovak: 'dôvera, sebaistota, optimismus ohľadne budúcnosti' },
+                { german: 'Eine wundervolle und besinnliche Weihnachtszeit', slovak: 'Krásne a pokojné vianočné obdobie' },
+                { german: 'Verpiss dich', slovak: 'zmizni, strať sa' },
+                { german: 'Verpiss dich, du Wichser', slovak: 'Zmizni, ty kretén!; Strat sa, ty hajzel!' },
+                { german: 'Im Bett bist du eine Null! Selbst der beste Jockey kann nichts machen, wenn die Stute lahmt!', slovak: 'V posteli si nula! -Ani ten najlepší džokej nič nezmôže, keď kobyla kríva' },
+                { german: 'Schnall dich an!', slovak: 'zapni si pás!' },
+                { german: 'Herausforderung', slovak: 'výzva, vyzvanie' },
+                { german: 'Ich musste mich entscheiden', slovak: 'musel som sa rozhodnúť' },
+                { german: 'der Apfel', slovak: 'jablko' },
+                { german: 'die Birne', slovak: 'hruška' },
+                { german: 'die Pflaume', slovak: 'slivka' },
+                { german: 'die Kirsche', slovak: 'čerešňa' },
+                { german: 'die Sauerkirsche', slovak: 'višňa' },
+                { german: 'der Pfirsich', slovak: 'broskyňa' },
+                { german: 'die Nektarine', slovak: 'nektarinka' },
+                { german: 'die Aprikose', slovak: 'marhuľa' },
+                { german: 'die Traube', slovak: 'hrozno' },
+                { german: 'die Orange / die Apfelsine', slovak: 'pomaranč' },
+                { german: 'die Mandarine', slovak: 'mandarínka' },
+                { german: 'die Zitrone', slovak: 'citrón' },
+                { german: 'die Grapefruit', slovak: 'grep (grapefruit)' },
+                { german: 'die Ananas', slovak: 'ananás' },
+                { german: 'die Banane', slovak: 'banán' },
+                { german: 'die Kiwi', slovak: 'kivi' },
+                { german: 'die Mango', slovak: 'mango' },
+                { german: 'die Wassermelone', slovak: 'melón (červený)' },
+                { german: 'die Honigmelone', slovak: 'melón (žltý)' },
+                { german: 'die Erdbeere', slovak: 'jahoda' },
+                { german: 'die Himbeere', slovak: 'malina' },
+                { german: 'die Brombeere', slovak: 'černica' },
+                { german: 'die Johannisbeere', slovak: 'ríbezľa' },
+                { german: 'die Stachelbeere', slovak: 'egreš' },
+                { german: 'der Granatapfel', slovak: 'granátové jablko' },
+                { german: 'die Feige', slovak: 'figy' },
+                { german: 'die Dattel', slovak: 'datle' },
+                { german: 'die Limette', slovak: 'limetka' },
+                { german: 'die Passionsfrucht', slovak: 'marakuja' },
+                { german: 'die Kokosnuss', slovak: 'kokosový orech' },
+                { german: 'die Avocado', slovak: 'avokádo' },
+                { german: 'im Gebet', slovak: 'v modlitbe' },
+                { german: 'Deine Gnade', slovak: 'Tvoja milosť' },
+                { german: 'Barmherzigkeit', slovak: 'zľutovanie, milosrdenstvo' },
+                { german: 'für mich', slovak: 'pre mňa' },
+                { german: 'alle Menschen', slovak: 'všetci ľudia' },
+                { german: 'die ich liebe', slovak: 'ktorých milujem' },
+                { german: 'schenke', slovak: 'daruj' },
+                { german: 'Mut', slovak: 'odvaha' },
+                { german: 'Geduld', slovak: 'trpezlivosť' },
+                { german: 'um… zu meistern', slovak: 'aby som zvládol/zvládla' },
+                { german: 'Herausforderungen des Lebens', slovak: 'výzvy života' },
+                { german: 'meine Prioritäten zu setzen', slovak: 'určiť si priority' },
+                { german: 'mich zu konzentrieren', slovak: 'sústrediť sa' },
+                { german: 'auf das, was wirklich wichtig ist', slovak: 'na to, čo je naozaj dôležité' },
+                { german: 'Ich vertraue darauf', slovak: 'Dôverujem tomu' },
+                { german: 'dass Du immer bei mir bist', slovak: 'že si vždy pri mne' },
+                { german: 'Ich verspreche', slovak: 'Sľubujem' },
+                { german: 'Rührei', slovak: 'miešané vajíčka, praženica' },
+                { german: 'Großes Bier', slovak: 'veľké pivo' },
+                { german: 'Spiegelei', slovak: 'volské oko' },
+                { german: 'Retouren, Retoure', slovak: 'vrátený tovar, vratky' },
+                { german: 'Deutsche Lebens-Rettungs-Gesellschaft (DLRG)', slovak: 'Nemecká spoločnosť pre záchranu života' },
+                { german: 'Rohrzucker', slovak: 'trstinový cukor' },
+                { german: 'Fernweh', slovak: 'túžba po cestovaní' },
+                { german: 'Nachdem die Rechnung bezahlt worden war, wurde die Ware verschickt', slovak: 'Potom, čo bola faktúra zaplatená, bol tovar odoslaný.' },
+                { german: 'Ich weiß nicht, warum ich mich damit beschäftigen sollte', slovak: 'Neviem, prečo by som sa tým mal zaoberať.' },
+                { german: 'Könnten Sie mir bitte nähere Informationen mitteilen, damit ich Ihnen dabei helfen kann?', slovak: 'Mohli by ste mi, prosím, poskytnúť bližšie informácie, aby som vám s tým mohol pomôcť?' },
+                { german: 'Dürfte ich Sie um nähere Informationen über diese Angelegenheit / über diese Sache bitten?', slovak: 'Smel by som vás požiadať o bližšie informácie o tejto záležitosti / o tejto veci?' },
+                { german: 'die Fußsohle', slovak: 'chodidlo' },
+                { german: 'die Zehen', slovak: 'prsty na nohe' },
+                { german: 'Benachrichtigungen aktivieren', slovak: 'zapnúť upozornenia' },
+                { german: 'entsprechend', slovak: 'zodpovedajúci' },
+                { german: 'Ich werde zurückkehren', slovak: 'Vrátim sa' },
+                { german: 'KPAK: Kedy – Prečo – Ako – Kde', slovak: 'KPAK: Kedy – Prečo – Ako – Kde' },
+                { german: 'Ich hole mir ein Glas Wasser.', slovak: 'Idem si po pohár vody.' },
+                { german: 'Kannst du die Zeitung holen?', slovak: 'Môžeš priniesť noviny?' },
+                { german: 'Ich hole dich vom Bahnhof ab.', slovak: 'Prídem ťa vyzdvihnúť na stanicu.' },
+                { german: 'Er holt das Paket ab.', slovak: 'Ide si po balík.' },
+                { german: 'Ich erhole mich am Wochenende.', slovak: 'Oddýchnem si cez víkend.' },
+                { german: 'Sie hat sich nach der Krankheit gut erholt.', slovak: 'Dobre sa zotavila po chorobe.' },
+                { german: 'durchnässt', slovak: 'premočnený, celý mokrý' },
+                { german: 'Ich zähle auf dich.', slovak: 'Spolieham sa na teba.' },
+                { german: 'Du kannst auf mich zählen.', slovak: 'Môžeš sa na mňa spoľahnúť.' },
+                { german: 'Er zählt zu den Besten.', slovak: 'Patrí medzi najlepších.' },
+                { german: 'Das zählt zu meinen Lieblingsbüchern.', slovak: 'To patrí medzi moje obľúbené knihy.' },
+                { german: 'Ich bin pappsatt', slovak: 'Som úplne sýty, Som prejedený' },
+                { german: 'Ich bin satt', slovak: 'som sýty' },
+                { german: 'Du hast meine Gedanken ausgesprochen', slovak: 'Vyslovil si moje myšlienky, Povedal si to, čo som si myslel(a)' },
+                { german: 'Ich bin fix und fertig', slovak: 'Som úplne vyčerpaný/á, Som totálne hotový/á' },
+            ];
+
+            const appContent = document.getElementById('app-content');
+            let currentWordIndex = -1;
+            let showSlovak = false;
+            let speechSynth = window.speechSynthesis;
+            let voices = [];
+
+            const updateVoices = () => {
+                voices = speechSynth.getVoices();
+            };
+
+            if (speechSynth) {
+                updateVoices();
+                if (speechSynth.onvoiceschanged !== undefined) {
+                    speechSynth.onvoiceschanged = updateVoices;
+                }
+            }
+
+            const speakText = (text, lang) => {
+                if (!speechSynth) {
+                    alert("Prehliadač nepodporuje prevod textu na reč.");
+                    return;
+                }
+
+                speechSynth.cancel();
+
+                const utterance = new SpeechSynthesisUtterance(text);
+                
+                const voice = voices.find(voice => voice.lang.startsWith(lang));
+                if (voice) {
+                    utterance.voice = voice;
+                } else {
+                    utterance.lang = lang === 'de' ? 'de-DE' : 'sk-SK';
+                }
+                
+                speechSynth.speak(utterance);
+            };
+            
+            const getRandomWord = () => {
+                showSlovak = false;
+                currentWordIndex = Math.floor(Math.random() * vocabularyList.length);
+                render();
+            };
+
+            const handleReveal = () => {
+                showSlovak = true;
+                render();
+            };
+
+            const handleNext = () => {
+                getRandomWord();
+            };
+
+            const render = () => {
+                const currentWord = vocabularyList[currentWordIndex];
+                
+                let html = '';
+                html += `<div class="word-display">`;
+                html += `<p class="text-4xl font-extrabold text-slate-900 break-words max-w-full" style="user-select: text;">${currentWord.german}</p>`;
+                html += `<button id="playGerman" class="speak-button button-blue">Prehrať v nemčine</button>`;
+                html += `</div>`;
+
+                if (showSlovak) {
+                    html += `<div class="slovak-display">
+                                <p class="text-xl font-semibold text-green-600 break-words max-w-full" style="user-select: text;">${currentWord.slovak}</p>
+                                <button id="playSlovak" class="speak-button button-green">Prehrať v slovenčine</button>
+                             </div>`;
+                }
+
+                html += `<div class="flex flex-col space-y-3 mt-8">`;
+                if (!showSlovak) {
+                    html += `<button id="revealBtn" class="button button-indigo">Zobraziť preklad</button>`;
+                } else {
+                    html += `<button id="nextBtn" class="button button-indigo">Ďalšie slovo</button>`;
+                }
+                html += `<button id="skipBtn" class="button button-red">Preskočiť slovo</button>`;
+                html += `</div>`;
+                
+                appContent.innerHTML = html;
+
+                document.getElementById('playGerman').addEventListener('click', () => {
+                    speakText(currentWord.german, 'de');
+                });
+
+                if (showSlovak) {
+                    document.getElementById('playSlovak').addEventListener('click', () => {
+                        speakText(currentWord.slovak, 'sk');
+                    });
+                    document.getElementById('nextBtn').addEventListener('click', handleNext);
+                } else {
+                    document.getElementById('revealBtn').addEventListener('click', handleReveal);
+                }
+
+                document.getElementById('skipBtn').addEventListener('click', getRandomWord);
+            };
+            
+            getRandomWord();
+        });
+    </script>
+</body>
+</html>
